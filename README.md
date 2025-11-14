@@ -16,7 +16,7 @@ A beautiful, responsive website for your engagement party with RSVP functionalit
 
 Edit `index.html` to personalize your engagement party details:
 
-- Replace `[Your Names]` with your names
+
 - Update event date, time, and venue information
 - Add your specific schedule and timings
 - Customize dress code and additional information
