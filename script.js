@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // RSVP Form Submission to Google Sheets
 // IMPORTANT: Replace 'YOUR_GOOGLE_SCRIPT_URL' with your actual Google Apps Script Web App URL
-const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfBXravlS9XjXsUWIa5W9sjJZOtPtX4NiEJjkkqB8XW0WZ8l3LaKg-Jx_9v2CE2CvlrA/exec';
 
 document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
     e.preventDefault();
