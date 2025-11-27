@@ -163,12 +163,15 @@ const WeddingWebsite = () => {
         }
         .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(107,45,92,0.12); }
         
-        .timeline-item { position: relative; }
-        .timeline-item::before {
-          content: ''; position: absolute; left: 29px; top: 64px; width: 2px; height: calc(100% - 30px);
-          background: linear-gradient(to bottom, #C9A227, #2A9D8F);
+        .timeline-icon {
+          position: relative;
         }
-        .timeline-item:last-child::before { display: none; }
+        .timeline-icon::after {
+          content: ''; position: absolute; left: 50%; top: 60px; width: 2px;
+          height: 92px;
+          background: linear-gradient(to bottom, #C9A227, #2A9D8F);
+          transform: translateX(-50%);
+        }
         
         input, textarea, select {
           width: 100%; padding: 14px 16px; border-radius: 10px; border: 1px solid #E8D5F2;
@@ -255,9 +258,11 @@ const WeddingWebsite = () => {
           }
           .flip-card {
             max-width: 100%;
+            margin-bottom: 32px !important;
           }
           .flip-card-back {
             padding: 40px 20px;
+            min-height: 400px;
           }
           .menu-btn {
             left: 20px !important;
@@ -408,7 +413,8 @@ const WeddingWebsite = () => {
             letterSpacing: '0.5px',
             marginBottom: '48px',
             maxWidth: '600px',
-            margin: '0 auto 48px'
+            margin: '0 auto 48px',
+            padding: '0 20px'
           }}>
             We are so excited to celebrate this milestone with all of you. Please visit our website for finalized details closer to the date.
           </p>
@@ -493,12 +499,13 @@ const WeddingWebsite = () => {
             { time: '5:00 PM', title: 'Ceremony & Rituals', desc: 'Traditional Bengali & Tamil ceremonies', icon: '🪔' },
             { time: '7:00 PM', title: 'Cocktail Hour', desc: 'Celebrate with drinks, appetizers & music', icon: '🥂' }
           ].map((item, i) => (
-            <div key={i} className="timeline-item" style={{ display: 'flex', gap: '20px', marginBottom: '32px' }}>
-              <div style={{
+            <div key={i} className="timeline-item" style={{ display: 'flex', gap: '20px', marginBottom: '32px', alignItems: 'center' }}>
+              <div className={i < 2 ? 'timeline-icon' : ''} style={{
                 width: '60px', height: '60px', borderRadius: '50%',
                 background: `linear-gradient(135deg, ${c.turquoise}, ${c.bayBlue})`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', flexShrink: 0,
-                boxShadow: '0 4px 16px rgba(42,157,143,0.3)'
+                boxShadow: '0 4px 16px rgba(42,157,143,0.3)',
+                position: 'relative'
               }}>{item.icon}</div>
               <div className="card" style={{ flex: 1 }}>
                 <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '12px', color: c.turquoise, fontWeight: 600, marginBottom: '6px', letterSpacing: '1px' }}>{item.time}</p>
