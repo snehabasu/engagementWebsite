@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweGV9TvDeWSlpYVHpUgbpkCJVjszrlefUiDuDxmoduYLtqNW35FhKYthdWhpcsGpv3Tw/exec';
 
 const WeddingWebsite = () => {
-  const [activeTab, setActiveTab] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', attendance: '', guests: '1', dietary: '', message: ''
@@ -11,6 +10,15 @@ const WeddingWebsite = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Smooth scroll function
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setMenuOpen(false);
+    }
+  };
 
   const c = { 
     deepPurple: '#6B2D5C', 
@@ -96,10 +104,6 @@ const WeddingWebsite = () => {
     }
   };
 
-  const scrollToSection = (section) => {
-    setActiveTab(section);
-    setMenuOpen(false);
-  };
 
   return (
     <div style={{ fontFamily: 'Georgia, serif', background: c.cream, minHeight: '100vh', color: c.charcoal }}>
@@ -193,16 +197,15 @@ const WeddingWebsite = () => {
       {/* Full Screen Menu */}
       {menuOpen && (
         <div className="menu-overlay">
-          <button className="menu-item" onClick={() => scrollToSection('home')}>Home</button>
-          <button className="menu-item" onClick={() => scrollToSection('schedule')}>Schedule</button>
-          <button className="menu-item" onClick={() => scrollToSection('details')}>Details</button>
-          <button className="menu-item" onClick={() => scrollToSection('rsvp')}>RSVP</button>
+          <button className="menu-item" onClick={() => scrollToSection('home-section')}>Home</button>
+          <button className="menu-item" onClick={() => scrollToSection('details-section')}>Details</button>
+          <button className="menu-item" onClick={() => scrollToSection('schedule-section')}>Schedule</button>
+          <button className="menu-item" onClick={() => scrollToSection('rsvp-section')}>RSVP</button>
         </div>
       )}
 
       {/* HOME - Split Screen Hero */}
-      {activeTab === 'home' && (
-        <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+      <section id="home-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
           {/* Left - Photo Side */}
           <div style={{
             flex: '1 1 50%', minHeight: '100vh', minWidth: '300px',
@@ -257,20 +260,20 @@ const WeddingWebsite = () => {
               }}>
                 Saturday
               </p>
-              <h2 style={{ 
+              <h2 style={{
                 fontFamily: "'Cormorant Garamond', Georgia", fontSize: 'clamp(36px, 5vw, 48px)',
                 color: 'white', fontWeight: 400, marginBottom: '48px', letterSpacing: '2px'
               }}>
                 March 21, 2026
               </h2>
-              
-              <button className="btn-outline" onClick={() => setActiveTab('rsvp')}>
+
+              <button className="btn-outline" onClick={() => scrollToSection('rsvp-section')}>
                 RSVP
               </button>
-              
-              <div style={{ marginTop: '64px' }}>
-                <button className="view-details" onClick={() => setActiveTab('details')}>
-                  View Details
+
+              <div style={{ marginTop: '64px', display: 'flex', justifyContent: 'center' }}>
+                <button className="view-details" onClick={() => scrollToSection('details-section')}>
+                  Scroll to Explore
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M6 9l6 6 6-6"/>
                   </svg>
@@ -280,94 +283,74 @@ const WeddingWebsite = () => {
 
             {/* Decorative gold accent */}
             <div style={{
-              position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-70%)',
+              position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
               width: '100px', height: '2px', background: `linear-gradient(90deg, transparent, ${c.gold}, transparent)`
             }}/>
           </div>
         </section>
-      )}
-
-      {/* SCHEDULE */}
-      {activeTab === 'schedule' && (
-        <section style={{ minHeight: '100vh', padding: '80px 24px', background: `linear-gradient(180deg, ${c.cream} 0%, #F5EBE6 100%)` }}>
-          <div style={{ maxWidth: '560px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-              <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: '28px', color: c.gold, marginBottom: '8px' }}>Saturday</p>
-              <h2 className="gradient-text" style={{ fontSize: '36px', fontWeight: 600, marginBottom: '16px', fontFamily: "'Cormorant Garamond', Georgia" }}>March 21, 2026</h2>
-              <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.deepPurple, letterSpacing: '3px', fontSize: '12px', textTransform: 'uppercase' }}>Schedule of Events</p>
-            </div>
-
-            {[
-              { time: '4:00 PM', title: 'Arrival & Welcome', desc: 'Light refreshments as we gather together', icon: '🌸' },
-              { time: '5:00 PM', title: 'Ceremony & Rituals', desc: 'Traditional Bengali & Tamil ceremonies', icon: '🪔' },
-              { time: '7:00 PM', title: 'Cocktail Hour', desc: 'Celebrate with drinks, appetizers & music', icon: '🥂' }
-            ].map((item, i) => (
-              <div key={i} className="timeline-item" style={{ display: 'flex', gap: '20px', marginBottom: '32px' }}>
-                <div style={{
-                  width: '60px', height: '60px', borderRadius: '50%',
-                  background: `linear-gradient(135deg, ${c.turquoise}, ${c.bayBlue})`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', flexShrink: 0,
-                  boxShadow: '0 4px 16px rgba(42,157,143,0.3)'
-                }}>{item.icon}</div>
-                <div className="card" style={{ flex: 1 }}>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '12px', color: c.turquoise, fontWeight: 600, marginBottom: '6px', letterSpacing: '1px' }}>{item.time}</p>
-                  <h3 style={{ fontSize: '22px', color: c.deepPurple, marginBottom: '8px', fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia" }}>{item.title}</h3>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.charcoal, opacity: 0.75, fontSize: '14px', lineHeight: 1.6 }}>{item.desc}</p>
-                </div>
-              </div>
-            ))}
-
-            <div style={{ textAlign: 'center', marginTop: '48px' }}>
-              <button className="btn-outline" onClick={() => setActiveTab('home')} 
-                style={{ borderColor: c.deepPurple, color: c.deepPurple }}>
-                ← Back Home
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* DETAILS */}
-      {activeTab === 'details' && (
-        <section style={{ minHeight: '100vh', padding: '80px 24px', background: c.cream }}>
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-              <h2 className="gradient-text" style={{ fontSize: '36px', fontWeight: 600, marginBottom: '16px', fontFamily: "'Cormorant Garamond', Georgia" }}>Event Details</h2>
-              <div style={{ width: '80px', height: '2px', background: `linear-gradient(90deg, ${c.gold}, ${c.turquoise})`, margin: '0 auto' }} />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
-              {[
-                { icon: '📍', title: 'Venue', main: 'Sugar Land, TX', sub: 'Full address coming soon' },
-                { icon: '👗', title: 'Dress Code', main: 'Festive Indian / Cocktail', sub: 'Traditional or elegant attire welcome' },
-                { icon: '🏨', title: 'Accommodations', main: 'Coming Soon', sub: 'Hotel block info to follow' }
-              ].map((card, i) => (
-                <div key={i} className="card">
-                  <div style={{
-                    width: '50px', height: '50px', borderRadius: '12px',
-                    background: `linear-gradient(135deg, #F5EBE6, ${c.cream})`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '20px'
-                  }}>{card.icon}</div>
-                  <h3 style={{ fontSize: '20px', color: c.deepPurple, marginBottom: '12px', fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia" }}>{card.title}</h3>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.turquoise, fontWeight: 600, fontSize: '14px', marginBottom: '6px' }}>{card.main}</p>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.charcoal, opacity: 0.7, fontSize: '13px' }}>{card.sub}</p>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ textAlign: 'center', marginTop: '56px' }}>
-              <button className="btn-outline" onClick={() => setActiveTab('home')} 
-                style={{ borderColor: c.deepPurple, color: c.deepPurple }}>
-                ← Back Home
-              </button>
-            </div>
+      <section id="details-section" style={{ minHeight: '100vh', padding: '80px 24px', background: c.cream }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <h2 className="gradient-text" style={{ fontSize: '36px', fontWeight: 600, marginBottom: '16px', fontFamily: "'Cormorant Garamond', Georgia" }}>Event Details</h2>
+            <div style={{ width: '80px', height: '2px', background: `linear-gradient(90deg, ${c.gold}, ${c.turquoise})`, margin: '0 auto' }} />
           </div>
-        </section>
-      )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
+            {[
+              { icon: '📍', title: 'Venue', main: 'Sugar Land, TX', sub: 'Full address coming soon' },
+              { icon: '👗', title: 'Dress Code', main: 'Festive Indian / Cocktail', sub: 'Traditional or elegant attire welcome' },
+              { icon: '🏨', title: 'Accommodations', main: 'Coming Soon', sub: 'Hotel block info to follow' }
+            ].map((card, i) => (
+              <div key={i} className="card">
+                <div style={{
+                  width: '50px', height: '50px', borderRadius: '12px',
+                  background: `linear-gradient(135deg, #F5EBE6, ${c.cream})`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '20px'
+                }}>{card.icon}</div>
+                <h3 style={{ fontSize: '20px', color: c.deepPurple, marginBottom: '12px', fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia" }}>{card.title}</h3>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.turquoise, fontWeight: 600, fontSize: '14px', marginBottom: '6px' }}>{card.main}</p>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.charcoal, opacity: 0.7, fontSize: '13px' }}>{card.sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SCHEDULE */}
+      <section id="schedule-section" style={{ minHeight: '100vh', padding: '80px 24px', background: `linear-gradient(180deg, ${c.cream} 0%, #F5EBE6 100%)` }}>
+        <div style={{ maxWidth: '560px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: '28px', color: c.gold, marginBottom: '8px' }}>Saturday</p>
+            <h2 className="gradient-text" style={{ fontSize: '36px', fontWeight: 600, marginBottom: '16px', fontFamily: "'Cormorant Garamond', Georgia" }}>March 21, 2026</h2>
+            <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.deepPurple, letterSpacing: '3px', fontSize: '12px', textTransform: 'uppercase' }}>Schedule of Events</p>
+          </div>
+
+          {[
+            { time: '4:00 PM', title: 'Arrival & Welcome', desc: 'Light refreshments as we gather together', icon: '🌸' },
+            { time: '5:00 PM', title: 'Ceremony & Rituals', desc: 'Traditional Bengali & Tamil ceremonies', icon: '🪔' },
+            { time: '7:00 PM', title: 'Cocktail Hour', desc: 'Celebrate with drinks, appetizers & music', icon: '🥂' }
+          ].map((item, i) => (
+            <div key={i} className="timeline-item" style={{ display: 'flex', gap: '20px', marginBottom: '32px' }}>
+              <div style={{
+                width: '60px', height: '60px', borderRadius: '50%',
+                background: `linear-gradient(135deg, ${c.turquoise}, ${c.bayBlue})`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', flexShrink: 0,
+                boxShadow: '0 4px 16px rgba(42,157,143,0.3)'
+              }}>{item.icon}</div>
+              <div className="card" style={{ flex: 1 }}>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '12px', color: c.turquoise, fontWeight: 600, marginBottom: '6px', letterSpacing: '1px' }}>{item.time}</p>
+                <h3 style={{ fontSize: '22px', color: c.deepPurple, marginBottom: '8px', fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia" }}>{item.title}</h3>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", color: c.charcoal, opacity: 0.75, fontSize: '14px', lineHeight: 1.6 }}>{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* RSVP */}
-      {activeTab === 'rsvp' && (
-        <section style={{ minHeight: '100vh', padding: '80px 24px', background: `linear-gradient(180deg, #F5EBE6 0%, ${c.cream} 100%)` }}>
+      <section id="rsvp-section" style={{ minHeight: '100vh', padding: '80px 24px', background: `linear-gradient(180deg, #F5EBE6 0%, ${c.cream} 100%)` }}>
           <div style={{ maxWidth: '480px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
               <h2 className="gradient-text" style={{ fontSize: '36px', fontWeight: 600, marginBottom: '12px', fontFamily: "'Cormorant Garamond', Georgia" }}>RSVP</h2>
@@ -431,13 +414,12 @@ const WeddingWebsite = () => {
             </form>
 
             <div style={{ textAlign: 'center', marginTop: '32px' }}>
-              <button className="view-details" onClick={() => setActiveTab('home')} style={{ color: c.deepPurple }}>
-                ← Back Home
+              <button className="view-details" onClick={() => scrollToSection('home-section')} style={{ color: c.deepPurple }}>
+                ← Back to Top
               </button>
             </div>
           </div>
         </section>
-      )}
     </div>
   );
 };
