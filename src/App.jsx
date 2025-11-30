@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweGV9TvDeWSlpYVHpUgbpkCJVjszrlefUiDuDxmoduYLtqNW35FhKYthdWhpcsGpv3Tw/exec';
 
@@ -11,6 +11,40 @@ const WeddingWebsite = () => {
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cardFlipped, setCardFlipped] = useState(false);
+  const flipCardRef = useRef(null);
+
+  // Auto-flip card on scroll for mobile devices
+  useEffect(() => {
+    // Only apply auto-flip on touch devices (phones/tablets without hover capability)
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
+    if (!isTouchDevice) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            // Card is 60% visible, flip it
+            setCardFlipped(true);
+          } else if (!entry.isIntersecting) {
+            // Card has left the viewport, flip it back
+            setCardFlipped(false);
+          }
+        });
+      },
+      {
+        threshold: [0, 0.6] // Trigger at 0% (leaving) and 60% (entering) visibility
+      }
+    );
+
+    const cardElement = flipCardRef.current;
+    if (cardElement) {
+      observer.observe(cardElement);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   // Smooth scroll function
   const scrollToSection = (sectionId) => {
@@ -344,6 +378,7 @@ const WeddingWebsite = () => {
 
           {/* Photo - Flip Card */}
           <div
+            ref={flipCardRef}
             className="flip-card"
             style={{ marginBottom: '48px', cursor: 'pointer' }}
             onClick={(e) => {
