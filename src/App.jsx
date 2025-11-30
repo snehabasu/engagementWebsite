@@ -5,7 +5,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweGV9TvDeWSl
 const WeddingWebsite = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', attendance: '', guests: '1', dietary: '', message: ''
+    name: '', email: '', phone: '', attendance: '', guestNames: [], dietary: '', message: ''
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
@@ -60,10 +60,14 @@ const WeddingWebsite = () => {
     setFormError('');
     setFormSubmitted(false);
 
+    // Filter out empty guest names and join with comma for backend compatibility
+    const filteredGuestNames = formData.guestNames.filter(name => name.trim() !== '');
     const submissionData = {
       ...formData,
+      guests: filteredGuestNames.join(', '),
       timestamp: new Date().toLocaleString()
     };
+    delete submissionData.guestNames;
 
     try {
       const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -91,7 +95,7 @@ const WeddingWebsite = () => {
         email: '',
         phone: '',
         attendance: '',
-        guests: '1',
+        guestNames: [],
         dietary: '',
         message: ''
       });
@@ -579,8 +583,76 @@ const WeddingWebsite = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="card" style={{ padding: '36px' }}>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>
+                  Full Name *
+                </label>
+                <input type="text" required placeholder="Enter your name"
+                  value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <label id="guest-names-label" style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Additional Guests (up to 5)</label>
+                {formData.guestNames.map((guestName, index) => (
+                  <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                    <input
+                      type="text"
+                      placeholder={`Guest ${index + 1} name`}
+                      value={guestName}
+                      aria-label={`Guest ${index + 1} name`}
+                      aria-describedby="guest-names-label"
+                      onChange={e => {
+                        const newGuestNames = [...formData.guestNames];
+                        newGuestNames[index] = e.target.value;
+                        setFormData({...formData, guestNames: newGuestNames});
+                      }}
+                      style={{ flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      aria-label={`Remove guest ${index + 1}`}
+                      onClick={() => {
+                        const newGuestNames = formData.guestNames.filter((_, i) => i !== index);
+                        setFormData({...formData, guestNames: newGuestNames});
+                      }}
+                      style={{
+                        padding: '8px 12px',
+                        background: 'transparent',
+                        border: `1px solid ${c.deepPurple}`,
+                        borderRadius: '8px',
+                        color: c.deepPurple,
+                        cursor: 'pointer',
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: '14px'
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                {formData.guestNames.length < 5 && (
+                  <button
+                    type="button"
+                    aria-label="Add another guest (maximum 5 guests allowed)"
+                    onClick={() => setFormData({...formData, guestNames: [...formData.guestNames, '']})}
+                    style={{
+                      padding: '8px 16px',
+                      background: 'transparent',
+                      border: `1px solid ${c.turquoise}`,
+                      borderRadius: '8px',
+                      color: c.turquoise,
+                      cursor: 'pointer',
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '13px',
+                      marginTop: '4px'
+                    }}
+                  >
+                    + Add Another Guest
+                  </button>
+                )}
+              </div>
+
               {[
-                { label: 'Full Name(s)', type: 'text', key: 'name', placeholder: 'Enter your name', required: true },
                 { label: 'Email Address', type: 'email', key: 'email', placeholder: 'your@email.com', required: true },
                 { label: 'Phone Number', type: 'tel', key: 'phone', placeholder: '(123) 456-7890' }
               ].map(field => (
@@ -600,11 +672,6 @@ const WeddingWebsite = () => {
                   <option value="yes">Yes, I'll be there! 🎉</option>
                   <option value="no">Sorry, I can't make it</option>
                 </select>
-              </div>
-
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Number of Guests *</label>
-                <input type="number" min="1" max="10" required value={formData.guests} onChange={e => setFormData({...formData, guests: e.target.value})} />
               </div>
 
               <div style={{ marginBottom: '20px' }}>
