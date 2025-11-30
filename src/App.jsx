@@ -5,7 +5,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweGV9TvDeWSl
 const WeddingWebsite = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', attendance: '', guests: '1', dietary: '', message: ''
+    name: '', email: '', phone: '', attendance: '', guestNames: [''], dietary: '', message: ''
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
@@ -60,10 +60,14 @@ const WeddingWebsite = () => {
     setFormError('');
     setFormSubmitted(false);
 
+    // Filter out empty guest names and join with comma for backend compatibility
+    const filteredGuestNames = formData.guestNames.filter(name => name.trim() !== '');
     const submissionData = {
       ...formData,
+      guests: filteredGuestNames.join(', '),
       timestamp: new Date().toLocaleString()
     };
+    delete submissionData.guestNames;
 
     try {
       const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -91,7 +95,7 @@ const WeddingWebsite = () => {
         email: '',
         phone: '',
         attendance: '',
-        guests: '1',
+        guestNames: [''],
         dietary: '',
         message: ''
       });
@@ -563,8 +567,62 @@ const WeddingWebsite = () => {
               </div>
 
               <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Number of Guests *</label>
-                <input type="number" min="1" max="10" required value={formData.guests} onChange={e => setFormData({...formData, guests: e.target.value})} />
+                <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Guest Names (up to 5)</label>
+                {formData.guestNames.map((guestName, index) => (
+                  <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                    <input
+                      type="text"
+                      placeholder={`Guest ${index + 1} name`}
+                      value={guestName}
+                      onChange={e => {
+                        const newGuestNames = [...formData.guestNames];
+                        newGuestNames[index] = e.target.value;
+                        setFormData({...formData, guestNames: newGuestNames});
+                      }}
+                      style={{ flex: 1 }}
+                    />
+                    {formData.guestNames.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newGuestNames = formData.guestNames.filter((_, i) => i !== index);
+                          setFormData({...formData, guestNames: newGuestNames});
+                        }}
+                        style={{
+                          padding: '8px 12px',
+                          background: 'transparent',
+                          border: `1px solid ${c.deepPurple}`,
+                          borderRadius: '8px',
+                          color: c.deepPurple,
+                          cursor: 'pointer',
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontSize: '14px'
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {formData.guestNames.length < 5 && (
+                  <button
+                    type="button"
+                    onClick={() => setFormData({...formData, guestNames: [...formData.guestNames, '']})}
+                    style={{
+                      padding: '8px 16px',
+                      background: 'transparent',
+                      border: `1px solid ${c.turquoise}`,
+                      borderRadius: '8px',
+                      color: c.turquoise,
+                      cursor: 'pointer',
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '13px',
+                      marginTop: '4px'
+                    }}
+                  >
+                    + Add Another Guest
+                  </button>
+                )}
               </div>
 
               <div style={{ marginBottom: '20px' }}>
