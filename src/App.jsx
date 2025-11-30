@@ -211,6 +211,11 @@ const WeddingWebsite = () => {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(6px); }
         }
+
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.1); opacity: 0.8; }
+        }
         
         .card {
           background: white; border-radius: 16px; padding: 24px;
@@ -426,24 +431,24 @@ const WeddingWebsite = () => {
                     display: 'block'
                   }}
                 />
-                {/* Tap indicator for mobile */}
+                {/* Subtle flip indicator for mobile - positioned at top right corner */}
                 <div className="tap-indicator" style={{
                   position: 'absolute',
-                  bottom: '16px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'rgba(0,0,0,0.7)',
-                  color: 'white',
-                  padding: '8px 16px',
-                  borderRadius: '20px',
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontSize: '12px',
-                  letterSpacing: '1px',
+                  top: '12px',
+                  right: '12px',
+                  background: `linear-gradient(135deg, ${c.gold}, #D4AF37)`,
+                  color: c.deepPurple,
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  fontSize: '16px',
+                  animation: 'pulse 2s infinite'
                 }}>
-                  <span>👆</span> Tap to flip
+                  ↻
                 </div>
               </div>
               {/* Back */}
@@ -485,24 +490,24 @@ const WeddingWebsite = () => {
                     Sugar Land, Texas
                   </p>
                 </div>
-                {/* Tap indicator for mobile */}
+                {/* Subtle flip indicator for mobile - positioned at top right corner */}
                 <div className="tap-indicator" style={{
                   position: 'absolute',
-                  bottom: '16px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  padding: '8px 16px',
-                  borderRadius: '20px',
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontSize: '12px',
-                  letterSpacing: '1px',
+                  top: '12px',
+                  right: '12px',
+                  background: c.gold,
+                  color: c.deepPurple,
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  fontSize: '16px',
+                  animation: 'pulse 2s infinite'
                 }}>
-                  <span>👆</span> Tap to flip back
+                  ↻
                 </div>
               </div>
             </div>
