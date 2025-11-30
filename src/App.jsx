@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweGV9TvDeWSlpYVHpUgbpkCJVjszrlefUiDuDxmoduYLtqNW35FhKYthdWhpcsGpv3Tw/exec';
 
@@ -11,6 +11,55 @@ const WeddingWebsite = () => {
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cardFlipped, setCardFlipped] = useState(false);
+  const flipCardRef = useRef(null);
+  const hasScrolledRef = useRef(false);
+
+  // Auto-flip card on scroll for mobile devices
+  useEffect(() => {
+    // Only apply auto-flip on touch devices (phones/tablets without hover capability)
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
+    if (!isTouchDevice) return;
+
+    const cardElement = flipCardRef.current;
+
+    // Track scroll to ensure we don't flip on initial page load
+    const handleScroll = () => {
+      if (!hasScrolledRef.current && window.scrollY > 50) {
+        hasScrolledRef.current = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Only flip if user has actually scrolled (not on initial load)
+          if (!hasScrolledRef.current) return;
+
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            // Card is 60% visible and user has scrolled, flip it
+            setCardFlipped(true);
+          } else if (!entry.isIntersecting) {
+            // Card has left the viewport, flip it back
+            setCardFlipped(false);
+          }
+        });
+      },
+      {
+        threshold: [0, 0.6] // Trigger at 0% (leaving) and 60% (entering) visibility
+      }
+    );
+
+    if (cardElement) {
+      observer.observe(cardElement);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
+  }, []);
 
   // Smooth scroll function
   const scrollToSection = (sectionId) => {
@@ -166,6 +215,11 @@ const WeddingWebsite = () => {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(6px); }
         }
+
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.1); opacity: 0.8; }
+        }
         
         .card {
           background: white; border-radius: 16px; padding: 24px;
@@ -247,6 +301,7 @@ const WeddingWebsite = () => {
           -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
           border-radius: 16px;
+          position: relative;
         }
 
         .flip-card-back {
@@ -263,6 +318,13 @@ const WeddingWebsite = () => {
           box-shadow: 0 20px 60px rgba(0,0,0,0.4);
           border: 3px solid #C9A227;
           min-height: 400px;
+        }
+
+        /* Hide tap indicator on desktop (hover-capable devices) */
+        @media (hover: hover) and (pointer: fine) {
+          .tap-indicator {
+            display: none !important;
+          }
         }
 
         @media (max-width: 768px) {
@@ -348,6 +410,7 @@ const WeddingWebsite = () => {
 
           {/* Photo - Flip Card */}
           <div
+            ref={flipCardRef}
             className="flip-card"
             style={{ marginBottom: '48px', cursor: 'pointer' }}
             onClick={(e) => {
@@ -372,6 +435,25 @@ const WeddingWebsite = () => {
                     display: 'block'
                   }}
                 />
+                {/* Subtle flip indicator for mobile - positioned at top right corner */}
+                <div className="tap-indicator" style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  background: c.gold,
+                  color: c.deepPurple,
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  fontSize: '16px',
+                  animation: 'pulse 2s infinite'
+                }}>
+                  ↻
+                </div>
               </div>
               {/* Back */}
               <div className="flip-card-back">
@@ -411,6 +493,25 @@ const WeddingWebsite = () => {
                   }}>
                     Sugar Land, Texas
                   </p>
+                </div>
+                {/* Subtle flip indicator for mobile - positioned at top right corner */}
+                <div className="tap-indicator" style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  background: c.gold,
+                  color: c.deepPurple,
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  fontSize: '16px',
+                  animation: 'pulse 2s infinite'
+                }}>
+                  ↻
                 </div>
               </div>
             </div>
