@@ -13,7 +13,6 @@ const WeddingWebsite = () => {
   const [cardFlipped, setCardFlipped] = useState(false);
   const flipCardRef = useRef(null);
   const hasScrolledRef = useRef(false);
-  const initialCardPositionRef = useRef(null);
 
   // Auto-flip card on scroll for mobile devices
   useEffect(() => {
@@ -21,11 +20,7 @@ const WeddingWebsite = () => {
     const isTouchDevice = window.matchMedia('(hover: none)').matches;
     if (!isTouchDevice) return;
 
-    // Store the initial position of the card to detect actual scrolling
     const cardElement = flipCardRef.current;
-    if (cardElement) {
-      initialCardPositionRef.current = cardElement.getBoundingClientRect().top;
-    }
 
     // Track scroll to ensure we don't flip on initial page load
     const handleScroll = () => {
