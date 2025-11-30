@@ -145,7 +145,7 @@ function sendConfirmationEmail(data) {
     : `${Utilities.formatDate(eventDetails.startTime, RSVP_CONFIG.timeZone, 'h:mma')} - ${Utilities.formatDate(eventDetails.endTime, RSVP_CONFIG.timeZone, 'h:mma z')}`;
 
   // Check if the person is attending or not
-  const isAttending = data.attendance && data.attendance.toLowerCase() === 'yes';
+  const isAttending = data.attendance && data.attendance.toString().toLowerCase().trim() === 'yes';
 
   let htmlBody;
   let emailSubject;
@@ -204,7 +204,7 @@ function sendConfirmationEmail(data) {
     addGuestToCalendarEvent(data.email, eventDetails);
     calendarResult = 'invite sent';
   } else if (!isAttending) {
-    Logger.log('Guest declined; skipping Calendar event.');
+    Logger.log('Guest not attending or attendance not provided; skipping Calendar event.');
   } else {
     Logger.log('No calendarId configured; skipping Calendar event.');
   }
