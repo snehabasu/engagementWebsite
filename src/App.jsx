@@ -543,31 +543,16 @@ const WeddingWebsite = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="card" style={{ padding: '36px' }}>
-              {[
-                { label: 'Full Name(s)', type: 'text', key: 'name', placeholder: 'Enter your name', required: true },
-                { label: 'Email Address', type: 'email', key: 'email', placeholder: 'your@email.com', required: true },
-                { label: 'Phone Number', type: 'tel', key: 'phone', placeholder: '(123) 456-7890' }
-              ].map(field => (
-                <div key={field.key} style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>
-                    {field.label} {field.required && '*'}
-                  </label>
-                  <input type={field.type} required={field.required} placeholder={field.placeholder}
-                    value={formData[field.key]} onChange={e => setFormData({...formData, [field.key]: e.target.value})} />
-                </div>
-              ))}
-
               <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Will you be attending? *</label>
-                <select required value={formData.attendance} onChange={e => setFormData({...formData, attendance: e.target.value})}>
-                  <option value="">Please select</option>
-                  <option value="yes">Yes, I'll be there! 🎉</option>
-                  <option value="no">Sorry, I can't make it</option>
-                </select>
+                <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>
+                  Full Name *
+                </label>
+                <input type="text" required placeholder="Enter your name"
+                  value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
               </div>
 
               <div style={{ marginBottom: '20px' }}>
-                <label id="guest-names-label" style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Guest Names (up to 5)</label>
+                <label id="guest-names-label" style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Additional Guests (up to 5)</label>
                 {formData.guestNames.map((guestName, index) => (
                   <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                     <input
@@ -627,6 +612,28 @@ const WeddingWebsite = () => {
                     + Add Another Guest
                   </button>
                 )}
+              </div>
+
+              {[
+                { label: 'Email Address', type: 'email', key: 'email', placeholder: 'your@email.com', required: true },
+                { label: 'Phone Number', type: 'tel', key: 'phone', placeholder: '(123) 456-7890' }
+              ].map(field => (
+                <div key={field.key} style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>
+                    {field.label} {field.required && '*'}
+                  </label>
+                  <input type={field.type} required={field.required} placeholder={field.placeholder}
+                    value={formData[field.key]} onChange={e => setFormData({...formData, [field.key]: e.target.value})} />
+                </div>
+              ))}
+
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: c.deepPurple, marginBottom: '8px', fontWeight: 500 }}>Will you be attending? *</label>
+                <select required value={formData.attendance} onChange={e => setFormData({...formData, attendance: e.target.value})}>
+                  <option value="">Please select</option>
+                  <option value="yes">Yes, I'll be there! 🎉</option>
+                  <option value="no">Sorry, I can't make it</option>
+                </select>
               </div>
 
               <div style={{ marginBottom: '20px' }}>
