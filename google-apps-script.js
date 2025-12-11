@@ -139,6 +139,37 @@ function sendConfirmationEmail(data) {
 
   const guestName = data.name || 'there';
   const eventDetails = RSVP_CONFIG.emailConfirmation.eventDetails;
+
+  // Check if the person responded "no" to the RSVP
+  if (data.attendance && data.attendance.toLowerCase() === 'no') {
+    Logger.log('Guest %s cannot attend; sending regret email', data.email);
+
+    const htmlBody = [
+      `Hi ${guestName},`,
+      ' ',
+      'We\'re sorry you can\'t make it to our engagement celebration.',
+      ' ',
+      'If anything changes, please feel free to update your RSVP at <a href="https://snehaandaaditya.com">snehaandaaditya.com</a>.',
+      ' ',
+      `With love,<br>${RSVP_CONFIG.emailConfirmation.fromNames}`
+    ].join('<br>');
+
+    MailApp.sendEmail({
+      to: data.email,
+      subject: 'We received your RSVP',
+      htmlBody: htmlBody,
+      body: htmlBody.replace(/<br>/g, '\n').replace(/<[^>]+>/g, '')
+    });
+    Logger.log('Regret email sent to %s', data.email);
+
+    return {
+      success: true,
+      message: 'Regret email sent',
+      calendarInvite: 'skipped'
+    };
+  }
+
+  // Original email for guests who are attending
   const inviteBlob = buildCalendarInvite(eventDetails, {
     name: data.name || '',
     email: data.email || ''
@@ -150,7 +181,7 @@ function sendConfirmationEmail(data) {
   const htmlBody = [
     `Hi ${guestName},`,
     ' ',
-    'Thank you for RSVPing to our engagement celebration! We can’t wait to celebrate with you.',
+    'Thank you for RSVPing to our engagement celebration! We can't wait to celebrate with you.',
     ' ',
     `<strong>Event:</strong> ${eventDetails.title}`,
     `<strong>Date:</strong> ${dateText}`,
@@ -276,6 +307,12 @@ function sendWhatsappOrSms(data) {
   if (!data.phone) {
     Logger.log('No phone number provided; skipping messaging.');
     return { success: false, message: 'No phone number provided' };
+  }
+
+  // Skip SMS for guests who cannot attend (regret email is already sent)
+  if (data.attendance && data.attendance.toLowerCase() === 'no') {
+    Logger.log('Guest %s cannot attend; skipping SMS (regret email sent instead)', data.phone);
+    return { success: false, message: 'SMS skipped for regrets (email sent)' };
   }
 
   const phone = normalizePhoneNumber(data.phone, RSVP_CONFIG.messaging.defaultCountryCode);
