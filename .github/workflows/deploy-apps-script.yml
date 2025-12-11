@@ -3,7 +3,7 @@ name: Deploy Google Apps Script
 on:
   push:
     branches:
-      - claude/engagement-party-website-01BHvzJ8XmeJoPtRzP65gwnZ
+      - main
     paths:
       - 'google-apps-script.js'
       - 'appsscript.json'
