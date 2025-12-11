@@ -35,9 +35,16 @@ jobs:
           echo "✓ Renamed google-apps-script.js to Code.js"
 
       - name: Deploy to Google Apps Script
-        uses: daikikatsuragawa/deploy-gas-action@v1
+        uses: daikikatsuragawa/clasp-action@v1.1.0
         with:
-          clasprcJson: ${{ secrets.CLASPRC_JSON }}
+          accessToken: ${{ secrets.CLASP_ACCESS_TOKEN }}
+          idToken: ${{ secrets.CLASP_ID_TOKEN }}
+          refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
+          clientId: ${{ secrets.CLASP_CLIENT_ID }}
+          clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
+          scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
+          command: 'deploy'
+          deployId: ${{ secrets.CLASP_DEPLOY_ID }}
 
       - name: Cleanup
         if: always()
