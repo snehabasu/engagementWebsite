@@ -211,7 +211,7 @@ const WeddingWebsite = () => {
           color: white; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 500;
           letter-spacing: 2px; cursor: pointer; transition: all 0.3s; border-radius: 8px; width: 100%;
         }
-        .btn-solid:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,162,39,0.3); }
+        .btn-solid:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(196,165,192,0.3); }
         .btn-solid:disabled { opacity: 0.6; cursor: not-allowed; }
         
         .view-details { 
